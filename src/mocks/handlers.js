@@ -245,11 +245,17 @@ export const handlers = [
 
   http.post('/api/inventory', async ({ request }) => {
     const newInventoryItem = await request.json();
+    console.log('Received inventory item:', newInventoryItem);
     const id = Math.max(...inventory.map(i => i.id)) + 1;
-    const item = { ...newInventoryItem, id };
+    const item = { 
+      ...newInventoryItem, 
+      id,
+      store_id: parseInt(newInventoryItem.store_id), // Ensure store_id is a number
+      book_id: parseInt(newInventoryItem.book_id)    // Ensure book_id is a number
+    };
     inventory.push(item);
     console.log('Added book to inventory:', item);
-    console.log('Current inventory:', inventory);
+    console.log('Current inventory after add:', inventory);
     return HttpResponse.json(item, { status: 201 });
   }),
 
@@ -278,11 +284,16 @@ export const handlers = [
     const bookId = parseInt(params.bookId);
     console.log('DELETE request for store:', storeId, 'book:', bookId);
     console.log('Current inventory:', inventory);
+    console.log('Looking for item with store_id:', storeId, 'and book_id:', bookId);
     
     const index = inventory.findIndex(i => i.store_id === storeId && i.book_id === bookId);
+    console.log('Found index:', index);
     
     if (index === -1) {
-      console.log('Book not found in inventory');
+      console.log('Book not found in inventory. Available items:');
+      inventory.forEach((item, idx) => {
+        console.log(`  [${idx}] store_id: ${item.store_id}, book_id: ${item.book_id}, id: ${item.id}`);
+      });
       return HttpResponse.json({ error: 'Book not found in store inventory' }, { status: 404 });
     }
     
