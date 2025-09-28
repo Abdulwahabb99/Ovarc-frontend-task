@@ -14,6 +14,7 @@ const StoreInventory = lazy(() => import('./pages/StoreInventory'));
 const BrowseBooks = lazy(() => import('./pages/BrowseBooks'));
 const BrowseAuthors = lazy(() => import('./pages/BrowseAuthors'));
 const BrowseStores = lazy(() => import('./pages/BrowseStores'));
+
 function App() {
   return (
     <AuthProvider>

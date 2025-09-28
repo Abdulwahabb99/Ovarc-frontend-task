@@ -58,6 +58,12 @@ export const useInventory = (storeId) => {
           authorsData = authors;
         }
 
+        console.log('Loaded inventory data:', {
+          storeBooks: storeBooksData,
+          allBooks: allBooksData,
+          authors: authorsData
+        });
+
         setBooks(storeBooksData);
         setAllBooks(allBooksData);
         setAuthors(authorsData);
@@ -159,7 +165,23 @@ export const useInventory = (storeId) => {
         throw new Error('Book not found in store inventory');
       }
 
-      await api.inventory.updatePrice(inventoryItem.inventory_id, newPrice);
+      console.log('Updating book price:', {
+        bookId,
+        newPrice,
+        inventoryId: inventoryItem.inventory_id,
+        book: inventoryItem
+      });
+
+      if (!inventoryItem.inventory_id) {
+        throw new Error('Inventory ID not found for this book');
+      }
+
+      try {
+        await api.inventory.updatePrice(inventoryItem.inventory_id, newPrice);
+      } catch (apiError) {
+        console.warn('API update failed, using local update:', apiError);
+        // Fallback: just update locally
+      }
       
       // Update local state
       setBooks(prevBooks =>

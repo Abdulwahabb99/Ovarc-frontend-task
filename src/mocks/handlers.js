@@ -235,7 +235,8 @@ export const handlers = [
         return {
           ...book,
           price: inventoryItem.price,
-          author_name: author ? `${author.first_name} ${author.last_name}` : 'Unknown Author'
+          author_name: author ? `${author.first_name} ${author.last_name}` : 'Unknown Author',
+          inventory_id: inventoryItem.id  // Add the inventory_id field
         };
       });
     
