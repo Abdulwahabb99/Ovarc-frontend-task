@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 📚 Bookstore Admin Interface
 
 ## 📝 Code Review Summary
@@ -11,6 +12,102 @@
 - **Performance Problems**: No memoization, inefficient re-renders, missing code splitting
 
 ### 🔄 Architecture Decisions
+=======
+# OVARC TASK - Bookstore Admin Interface
+
+## Tech Stack
+- **Vite**: Fast build tool and dev server.
+- **React Router**: Dynamic routing with code splitting.
+- **Tailwind CSS**: Utility-first CSS framework.
+- **MSW**: Mock Service Worker for API mocking.
+- **React Context**: Authentication state management.
+
+## Code Review Findings
+
+### Critical Issues
+- **No TypeScript**: Missing type safety and developer experience benefits
+- **No Testing**: Zero test coverage, no testing framework configured
+- **Security Vulnerabilities**: No input validation, XSS prevention, or CSRF protection
+- **Accessibility Issues**: Missing semantic HTML, ARIA labels, and keyboard navigation
+- **Performance Problems**: No memoization, inefficient re-renders, missing code splitting
+
+### Architecture & DX Issues
+- **Inconsistent Data Fetching**: Mixed patterns between useLibraryData and direct fetching
+- **Missing Error Boundaries**: App crashes on errors without graceful fallbacks
+- **No State Management**: Local state only, no global state solution
+- **Poor Error Handling**: Basic console.error without user feedback
+- **Limited Development Tools**: Missing linting rules, formatting, and pre-commit hooks
+
+## Environment Configuration
+
+### Mock Server Toggle
+Set `VITE_USE_MOCK_API=true` to use mock server, `false` for real backend.
+
+```bash
+# Use mock server (default)
+VITE_USE_MOCK_API=true
+
+# Use real backend
+VITE_USE_MOCK_API=false
+VITE_API_BASE_URL=http://localhost:3001
+```
+
+## Setup
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Start with mock server** (default):
+   ```bash
+   VITE_USE_MOCK_API=true npm run dev
+   ```
+
+4. **Run tests**:
+   ```bash
+   npm test
+   ```
+
+5. **Build for production**:
+   ```bash
+   npm run build
+   ```
+
+## Mock Server
+
+The application includes a Mock Service Worker (MSW) setup for development and testing:
+
+- **Mock Users**: 
+  - `admin` / `admin123` (Admin role)
+  - `manager` / `manager123` (Manager role)  
+  - `user` / `user123` (User role)
+
+- **API Endpoints**: All existing data endpoints are mocked
+- **Authentication**: Mock login/logout with role-based permissions
+- **Inventory Management**: Full CRUD operations for store inventory
+
+## Authentication
+
+- **Sign In/Out**: Use the authentication button in the top-right corner
+- **Role-based Access**: Only admin and manager roles can edit inventory
+- **Protected Routes**: Unauthenticated users cannot perform admin actions
+- **Session Management**: Authentication state persists across page refreshes
+
+## Store Inventory Features
+
+- **Books Tab**: View all books in a store with full table functionality
+- **Search**: Real-time search across book titles, authors, and IDs
+- **Sorting**: Click column headers to sort by any field
+- **Inline Editing**: Click "Edit" next to price to update book prices
+- **Add Books**: Search and add books to store inventory with pricing
+- **Remove Books**: Delete books from store inventory
+- **Responsive Design**: Works on desktop and mobile devices
+>>>>>>> 0a1e6ff (feat : Add authentication and inventory management features with MSW for API mocking. Implemented context for user authentication, added protected routes, and created components for adding books and managing inventory. Updated README with setup instructions and code review findings. Enhanced package dependencies for testing and development.)
 
 - **State Management**: React Context + useReducer
 - **API Layer**: Centralized client with retry logic

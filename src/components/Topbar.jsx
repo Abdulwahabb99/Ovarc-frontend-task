@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation } from 'react-router-dom'
-import usrImg from '../assets/usr.png'
+import AuthButton from './AuthButton'
+
 const Topbar = () => {
   const location = useLocation()
   const path = location.pathname;
@@ -44,10 +45,8 @@ const Topbar = () => {
 
       </div>
       <div className='flex-1 flex justify-end items-center'>
-        <img src={usrImg} alt="profile" className='ml-4 rounded' />
-        <p className='text-secondary-text font-light ml-1 h-full'>User Name</p>
-
-    </div>
+        <AuthButton />
+      </div>
     </div>
   )
 }

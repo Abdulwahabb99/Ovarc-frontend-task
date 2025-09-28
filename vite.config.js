@@ -8,5 +8,9 @@ export default defineConfig({
     extensions: ['.js', '.jsx', '.json']  
   },
   base: import.meta.VITE_BASE_PATH || '/',
- 
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/setupTests.js'],
+  },
 })

@@ -1,86 +1,116 @@
-// src/pages/Inventory.jsx
-import { useEffect, useState } from 'react';
-import Modal from '../components/Modal';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
+import InventoryTable from '../components/InventoryTable';
+import AddBookModal from '../components/AddBookModal';
+import Searchbar from '../components/Searchbar';
+import { useInventory } from '../hooks/useInventory';
+import Loading from './Loading';
+import ProtectedRoute from '../components/ProtectedRoute';
 
-const Inventory = () => {
-  // State for UI
+const StoreInventory = () => {
+  const { storeId } = useParams();
   const [activeTab, setActiveTab] = useState('books');
-  const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
-  // Set active tab based on view query param
-  const view = 'books';
-  useEffect(() => {
-    if (view === 'authors' || view === 'books') {
-      setActiveTab(view);
-    }
-  }, [view]);
+  const {
+    books,
+    availableBooks,
+    loading,
+    error,
+    searchTerm,
+    setSearchTerm,
+    sortConfig,
+    handleSort,
+    addBookToStore,
+    updateBookPrice,
+    removeBookFromStore,
+  } = useInventory(storeId);
 
-  // Modal controls
-  const openModal = () => setShowModal(true);
-  const closeModal = () => {
-    setShowModal(false);
-  };
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return (
+      <div className="py-6">
+        <div className="text-center text-red-500">
+          Error loading inventory: {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-6">
-      <div className="flex mb-4 w-full justify-center items-center">
+      {/* Tab Navigation */}
+      <div className="flex mb-6 w-full justify-center items-center">
         <button
           onClick={() => setActiveTab('books')}
-          className={`px-4 border-b-2 py-2 ${activeTab === 'books' ? 'border-b-main' : 'border-b-transparent'}`}
+          className={`px-6 py-3 border-b-2 font-medium ${
+            activeTab === 'books' 
+              ? 'border-b-main text-main' 
+              : 'border-b-transparent text-gray-500 hover:text-gray-700'
+          }`}
         >
           Books
         </button>
         <button
           onClick={() => setActiveTab('authors')}
-          className={`px-4 border-b-2 py-2 ${activeTab === 'authors' ? 'border-b-main' : 'border-b-transparent'}`}
+          className={`px-6 py-3 border-b-2 font-medium ${
+            activeTab === 'authors' 
+              ? 'border-b-main text-main' 
+              : 'border-b-transparent text-gray-500 hover:text-gray-700'
+          }`}
         >
           Authors
         </button>
       </div>
 
-      <Header addNew={openModal} title={`Store Inventory`} buttonTitle="Add to inventory" />
+      {/* Header with Search and Add Button */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex-1 max-w-md">
+          <Searchbar 
+            onSearchChange={setSearchTerm}
+            placeholder="Search books in store..."
+          />
+        </div>
+        <ProtectedRoute requireEdit={true}>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-main text-white px-4 py-2 rounded-md hover:bg-main/90 transition-colors"
+          >
+            Add Book to Store
+          </button>
+        </ProtectedRoute>
+      </div>
 
+      {/* Content */}
       {activeTab === 'books' ? (
-          <p className="text-gray-600">No books found in this store.</p>
+        <div>
+          <InventoryTable
+            books={books}
+            onUpdatePrice={updateBookPrice}
+            onRemoveBook={removeBookFromStore}
+            onSort={handleSort}
+            sortConfig={sortConfig}
+          />
+        </div>
       ) : (
-          <p className="text-gray-600">No authors with books in this store.</p>
+        <div className="text-center py-8">
+          <p className="text-gray-500">Authors view coming soon...</p>
+        </div>
       )}
 
-      <Modal
-        title="Add/Edit Book in Store"
-        save={closeModal}
-        cancel={closeModal}
-        show={showModal}
-        setShow={setShowModal}
-      >
-        <div className="flex flex-col gap-4 w-full">
-          <div>
-            <label htmlFor="book_select" className="block text-gray-700 font-medium mb-1">
-              Select Book
-            </label>
-            <select
-              id="book_select"
-              className="border border-gray-300 rounded p-2 w-full"
-            >
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="price" className="block text-gray-700 font-medium mb-1">
-              Price
-            </label>
-            <input
-              id="price"
-              type="text"
-              className="border border-gray-300 rounded p-2 w-full"
-              placeholder="Enter Price (e.g., 29.99)"
-            />
-          </div>
-        </div>
-      </Modal>
+      {/* Add Book Modal */}
+      <AddBookModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        availableBooks={availableBooks}
+        onAddBook={addBookToStore}
+      />
     </div>
   );
 };
 
-export default Inventory;
+export default StoreInventory;
