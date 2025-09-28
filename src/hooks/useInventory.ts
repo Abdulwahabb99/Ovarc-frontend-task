@@ -179,9 +179,21 @@ export const useInventory = (storeId: number): UseInventoryReturn => {
     try {
       await apiClient.inventory.addBookToStore(storeId, bookId, price);
       
-      // Refresh store books
-      const updatedBooks = await apiClient.inventory.getStoreBooks(storeId);
-      setState(prev => ({ ...prev, books: updatedBooks }));
+      // Find the book in allBooks and add it to the store books with proper author mapping
+      const bookToAdd = state.allBooks.find(book => book.id === bookId);
+      if (bookToAdd) {
+        const newBook = {
+          ...bookToAdd,
+          price: price,
+          author_name: authorMap[bookToAdd.author_id] || 'Unknown Author',
+          inventory_id: Date.now() // Temporary ID for local state
+        };
+        
+        setState(prev => ({
+          ...prev,
+          books: [...prev.books, newBook]
+        }));
+      }
       
       return { success: true };
     } catch (err) {
@@ -191,7 +203,7 @@ export const useInventory = (storeId: number): UseInventoryReturn => {
         message: err instanceof Error ? err.message : 'Failed to add book' 
       };
     }
-  }, [storeId]);
+  }, [storeId, state.allBooks, authorMap]);
 
   const updateBookPrice = useCallback(async (bookId: number, newPrice: number): Promise<ApiResponse> => {
     try {

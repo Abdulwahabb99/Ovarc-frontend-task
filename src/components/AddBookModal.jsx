@@ -117,10 +117,10 @@ const AddBookModal = ({ isOpen, onClose, availableBooks, onAddBook }) => {
                     filteredBooks.map((book) => (
                       <div
                         key={book.id}
-                        className={`p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-50 ${
+                        className={`p-3 border-b border-gray-200 cursor-pointer ${
                           selectedBook?.id === book.id
                             ? "bg-main text-white"
-                            : ""
+                            : "hover:bg-gray-50"
                         }`}
                         onClick={() => setSelectedBook(book)}
                       >

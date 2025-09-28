@@ -12,7 +12,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     }
   },
-  base: import.meta.env.VITE_BASE_PATH || '/',
+  base: process.env.VITE_BASE_PATH || '/',
   test: {
     globals: true,
     environment: 'jsdom',
