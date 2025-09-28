@@ -248,6 +248,8 @@ export const handlers = [
     const id = Math.max(...inventory.map(i => i.id)) + 1;
     const item = { ...newInventoryItem, id };
     inventory.push(item);
+    console.log('Added book to inventory:', item);
+    console.log('Current inventory:', inventory);
     return HttpResponse.json(item, { status: 201 });
   }),
 
@@ -274,13 +276,18 @@ export const handlers = [
   http.delete('/api/inventory/store/:storeId/book/:bookId', ({ params }) => {
     const storeId = parseInt(params.storeId);
     const bookId = parseInt(params.bookId);
+    console.log('DELETE request for store:', storeId, 'book:', bookId);
+    console.log('Current inventory:', inventory);
+    
     const index = inventory.findIndex(i => i.store_id === storeId && i.book_id === bookId);
     
     if (index === -1) {
+      console.log('Book not found in inventory');
       return HttpResponse.json({ error: 'Book not found in store inventory' }, { status: 404 });
     }
     
     inventory.splice(index, 1);
+    console.log('Book removed from inventory');
     return HttpResponse.json({ success: true });
   })
 ];

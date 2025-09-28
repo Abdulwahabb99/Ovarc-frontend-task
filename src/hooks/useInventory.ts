@@ -177,7 +177,11 @@ export const useInventory = (storeId: number): UseInventoryReturn => {
   // Actions
   const addBookToStore = useCallback(async (bookId: number, price: number): Promise<ApiResponse> => {
     try {
-      await apiClient.inventory.addBookToStore(storeId, bookId, price);
+      console.log('Adding book to store:', { bookId, price, storeId });
+      
+      // Call the API to add to MSW inventory
+      const result = await apiClient.inventory.addBookToStore(storeId, bookId, price);
+      console.log('API response:', result);
       
       // Find the book in allBooks and add it to the store books with proper author mapping
       const bookToAdd = state.allBooks.find(book => book.id === bookId);
@@ -186,13 +190,17 @@ export const useInventory = (storeId: number): UseInventoryReturn => {
           ...bookToAdd,
           price: price,
           author_name: authorMap[bookToAdd.author_id] || 'Unknown Author',
-          inventory_id: Date.now() // Temporary ID for local state
+          inventory_id: result.id || Date.now() // Use the ID from API response
         };
+        
+        console.log('Adding book to local state:', newBook);
         
         setState(prev => ({
           ...prev,
           books: [...prev.books, newBook]
         }));
+      } else {
+        console.error('Book not found in allBooks:', bookId);
       }
       
       return { success: true };
@@ -251,6 +259,9 @@ export const useInventory = (storeId: number): UseInventoryReturn => {
 
   const removeBookFromStore = useCallback(async (bookId: number): Promise<ApiResponse> => {
     try {
+      console.log('Removing book from store:', { bookId, storeId });
+      
+      // Call the API to remove from MSW inventory
       await apiClient.inventory.removeBookFromStore(storeId, bookId);
       
       // Update local state
@@ -258,6 +269,8 @@ export const useInventory = (storeId: number): UseInventoryReturn => {
         ...prev,
         books: prev.books.filter(book => book.id !== bookId)
       }));
+      
+      console.log('Book removed from local state');
       
       return { success: true };
     } catch (err) {
