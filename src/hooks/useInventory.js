@@ -17,11 +17,46 @@ export const useInventory = (storeId) => {
         setLoading(true);
         setError(null);
 
-        const [storeBooksData, allBooksData, authorsData] = await Promise.all([
-          api.inventory.getStoreBooks(storeId),
-          api.books.getAll(),
-          api.authors.getAll()
-        ]);
+        // Try API first, fallback to direct JSON if MSW fails
+        let storeBooksData, allBooksData, authorsData;
+        
+        try {
+          [storeBooksData, allBooksData, authorsData] = await Promise.all([
+            api.inventory.getStoreBooks(storeId),
+            api.books.getAll(),
+            api.authors.getAll()
+          ]);
+        } catch (apiError) {
+          console.warn('API failed, falling back to direct JSON fetch:', apiError);
+          // Fallback to direct JSON fetching
+          const [booksRes, authorsRes, inventoryRes] = await Promise.all([
+            fetch('/data/books.json').then(r => r.json()),
+            fetch('/data/authors.json').then(r => r.json()),
+            fetch('/data/inventory.json').then(r => r.json())
+          ]);
+          
+          const books = Array.isArray(booksRes) ? booksRes : [booksRes];
+          const authors = Array.isArray(authorsRes) ? authorsRes : [authorsRes];
+          const inventory = Array.isArray(inventoryRes) ? inventoryRes : [inventoryRes];
+          
+          // Filter books for this store
+          const storeInventory = inventory.filter(item => item.store_id === parseInt(storeId));
+          storeBooksData = books
+            .filter(book => storeInventory.some(item => item.book_id === book.id))
+            .map(book => {
+              const inventoryItem = storeInventory.find(item => item.book_id === book.id);
+              const author = authors.find(a => a.id === book.author_id);
+              return {
+                ...book,
+                price: inventoryItem?.price || 0,
+                author_name: author ? `${author.first_name} ${author.last_name}` : 'Unknown Author',
+                inventory_id: inventoryItem?.id
+              };
+            });
+          
+          allBooksData = books;
+          authorsData = authors;
+        }
 
         setBooks(storeBooksData);
         setAllBooks(allBooksData);

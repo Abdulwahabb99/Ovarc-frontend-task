@@ -1,8 +1,35 @@
 import { http, HttpResponse } from 'msw';
-import booksData from '../../public/data/books.json';
-import authorsData from '../../public/data/authors.json';
-import storesData from '../../public/data/stores.json';
-import inventoryData from '../../public/data/inventory.json';
+
+// Mock data - in a real app, this would come from your backend
+const booksData = [
+  {"id":1,"author_id":2,"name":"eget tempus vel pede morbi porttitor","isbn":"247489521-3","language":"Northern Sotho","page_count":2532,"format":"paperback"},
+  {"id":2,"author_id":20,"name":"eu interdum eu tincidunt in leo maecenas","isbn":"942012386-3","language":"Kashmiri","page_count":257,"format":"hardcover"},
+  {"id":3,"author_id":11,"name":"id turpis integer aliquet massa id","isbn":"270878376-9","language":"Afrikaans","page_count":1306,"format":"paperback"},
+  {"id":4,"author_id":3,"name":"ultrices posuere cubilia curae duis faucibus accumsan","isbn":"962278849-1","language":"Afrikaans","page_count":4830,"format":"paperback"},
+  {"id":5,"author_id":3,"name":"donec","isbn":"628699639-7","language":"Swahili","page_count":8709,"format":"ebook"}
+];
+
+const authorsData = [
+  {"id":1,"first_name":"John","last_name":"Doe"},
+  {"id":2,"first_name":"Jane","last_name":"Smith"},
+  {"id":3,"first_name":"Bob","last_name":"Johnson"},
+  {"id":4,"first_name":"Alice","last_name":"Brown"},
+  {"id":5,"first_name":"Charlie","last_name":"Wilson"}
+];
+
+const storesData = [
+  {"id":1,"name":"Main Street Bookstore","address":"123 Main St"},
+  {"id":2,"name":"Downtown Books","address":"456 Oak Ave"},
+  {"id":3,"name":"Central Library Store","address":"789 Pine St"}
+];
+
+const inventoryData = [
+  {"id":1,"store_id":1,"book_id":1,"price":29.99},
+  {"id":2,"store_id":1,"book_id":2,"price":19.99},
+  {"id":3,"store_id":2,"book_id":1,"price":27.99},
+  {"id":4,"store_id":2,"book_id":3,"price":24.99},
+  {"id":5,"store_id":3,"book_id":2,"price":21.99}
+];
 
 // Mock users for authentication
 const mockUsers = [
