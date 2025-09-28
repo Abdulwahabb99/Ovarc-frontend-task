@@ -1,13 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import path from 'path'
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tailwindcss(), react()],
   resolve: {
-    extensions: ['.js', '.jsx', '.json']  
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    }
   },
-  base: import.meta.VITE_BASE_PATH || '/',
+  base: import.meta.env.VITE_BASE_PATH || '/',
   test: {
     globals: true,
     environment: 'jsdom',

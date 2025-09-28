@@ -1,11 +1,11 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-const ProtectedRoute = ({ children, requireEdit = false }) => {
+const ProtectedRoute = ({ children, requireEdit = false, hideInsteadOfMessage = false }) => {
   const { isAuthenticated, canEdit, loading } = useAuth();
 
   if (loading) {
-    return (
+    return hideInsteadOfMessage ? null : (
       <div className="flex items-center justify-center p-8">
         <div className="text-gray-500">Loading...</div>
       </div>
@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, requireEdit = false }) => {
   }
 
   if (!isAuthenticated()) {
-    return (
+    return hideInsteadOfMessage ? null : (
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">
@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children, requireEdit = false }) => {
   }
 
   if (requireEdit && !canEdit()) {
-    return (
+    return hideInsteadOfMessage ? null : (
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Header from '../components/Header';
 import InventoryTable from '../components/InventoryTable';
 import AddBookModal from '../components/AddBookModal';
 import Searchbar from '../components/Searchbar';
@@ -67,7 +66,6 @@ const StoreInventory = () => {
         </button>
       </div>
 
-      {/* Header with Search and Add Button */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex-1 max-w-md">
           <Searchbar 
@@ -75,7 +73,7 @@ const StoreInventory = () => {
             placeholder="Search books in store..."
           />
         </div>
-        <ProtectedRoute requireEdit={true}>
+        <ProtectedRoute requireEdit={true} hideInsteadOfMessage={true}>
           <button
             onClick={() => setShowAddModal(true)}
             className="bg-main text-white px-4 py-2 rounded-md hover:bg-main/90 transition-colors"
